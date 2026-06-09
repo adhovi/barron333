@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barron's 333 Vocabulary Master</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== THEME TOKENS ===== */
+        :root {
+            --bg: #f0f4f8;
+            --surface: #ffffff;
+            --surface2: #f7f9fc;
+            --border: #dde3ed;
+            --accent: #3b6fd4;
+            --accent2: #7c5cbf;
+            --green: #1a9e6e;
+            --text: #1a202c;
+            --text-muted: #5a6a82;
+            --word-color: #1e4fa8;
+            --mnemonic-color: #1a7a50;
+            --hover-row: #eef3fb;
+            --selected-row: #dbeafe;
+            --badge-bg: rgba(26,158,110,0.1);
+            --badge-border: rgba(26,158,110,0.3);
+            --badge-text: #1a9e6e;
+            --header-th: #3b5280;
+            --header-th-bg: #e8edf8;
+            --shadow: 0 2px 16px rgba(60,80,140,0.08);
+            --btn-bg: #fff;
+            --btn-color: #3b6fd4;
+            --btn-border: #3b6fd4;
+            --btn-active-bg: #3b6fd4;
+            --btn-active-color: #fff;
+            --search-bg: #fff;
+            --search-border: #dde3ed;
+            --toggle-bg: #e2e8f0;
+            --toggle-knob: #fff;
+            --revlist-bg: #fff3cd;
+            --revlist-border: #ffc107;
+        }
+        [data-theme="dark"] {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface2: #22263a;
+            --border: #2e3350;
+            --accent: #6c8ef5;
+            --accent2: #a78bfa;
+            --green: #34d399;
+            --text: #e2e8f0;
+            --text-muted: #8892b0;
+            --word-color: #93c5fd;
+            --mnemonic-color: #86efac;
+            --hover-row: rgba(108,142,245,0.07);
+            --selected-row: rgba(108,142,245,0.18);
+            --badge-bg: rgba(52,211,153,0.12);
+            --badge-border: rgba(52,211,153,0.25);
+            --badge-text: #34d399;
+            --header-th: #c8d6f0;
+            --header-th-bg: #22263a;
+            --shadow: 0 2px 16px rgba(0,0,0,0.35);
+            --btn-bg: #1a1d27;
+            --btn-color: #6c8ef5;
+            --btn-border: #2e3350;
+            --btn-active-bg: #6c8ef5;
+            --btn-active-color: #fff;
+            --search-bg: #22263a;
+            --search-border: #2e3350;
+            --toggle-bg: #2e3350;
+            --toggle-knob: #6c8ef5;
+            --revlist-bg: rgba(255,193,7,0.08);
+            --revlist-border: #b8860b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px 14px 40px;
+            transition: background 0.25s, color 0.25s;
+        }
+        .container { max-width: 1100px; margin: auto; }
+
+        /* ===== TOPBAR ===== */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .topbar-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.8rem; color: var(--text-muted); cursor: pointer;
+            user-select: none;
+        }
+        .toggle-track {
+            width: 42px; height: 22px; border-radius: 11px;
+            background: var(--toggle-bg);
+            position: relative; cursor: pointer;
+            transition: background 0.25s;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .toggle-knob {
+            width: 16px; height: 16px; border-radius: 50%;
+            background: var(--toggle-knob);
+            position: absolute; top: 2px; left: 2px;
+            transition: transform 0.25s, background 0.25s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        [data-theme="dark"] .toggle-knob { transform: translateX(20px); }
+        [data-theme="dark"] .toggle-track { background: var(--accent); border-color: var(--accent); }
+
+        /* Revision Button */
+        .rev-btn {
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 16px; border-radius: 8px; font-size: 0.82rem;
+            font-weight: 600; cursor: pointer; border: 1.5px solid var(--revlist-border);
+            background: var(--revlist-bg); color: #b45309;
+            transition: all 0.2s; white-space: nowrap;
+        }
+        [data-theme="dark"] .rev-btn { color: #fbbf24; }
+        .rev-btn:hover { opacity: 0.85; }
+        .rev-badge {
+            background: #f59e0b; color: #fff;
+            border-radius: 10px; padding: 1px 7px;
+            font-size: 0.72rem; font-weight: 700; min-width: 20px; text-align: center;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center; margin-bottom: 22px; padding: 26px 20px 20px;
+            background: var(--surface); border-radius: 14px;
+            border: 1px solid var(--border); box-shadow: var(--shadow);
+            position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+            width: 400px; height: 180px;
+            background: radial-gradient(ellipse, rgba(108,142,245,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .header h1 {
+            font-size: clamp(1.3rem, 4vw, 1.9rem); font-weight: 700; letter-spacing: -0.4px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 6px;
+        }
+        .header .subtitle {
+            font-family: 'Hind Siliguri', sans-serif;
+            color: var(--text-muted); font-size: 0.92rem;
+        }
+        .stats-row { display: flex; justify-content: center; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+        .stat-chip {
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 20px; padding: 5px 14px; font-size: 0.78rem; color: var(--text-muted);
+        }
+        .stat-chip span { color: var(--accent); font-weight: 600; }
+
+        /* ===== SEARCH ===== */
+        .search-wrapper {
+            position: relative; margin-bottom: 18px;
+        }
+        .search-icon {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 1rem; pointer-events: none;
+        }
+        #searchInput {
+            width: 100%; padding: 11px 42px 11px 40px;
+            border: 1.5px solid var(--search-border); border-radius: 10px;
+            background: var(--search-bg); color: var(--text);
+            font-family: 'Inter', sans-serif; font-size: 0.9rem;
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        #searchInput:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108,142,245,0.12); }
+        #searchInput::placeholder { color: var(--text-muted); }
+        #clearSearch {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; color: var(--text-muted);
+            font-size: 1.1rem; display: none; padding: 2px 4px; border-radius: 4px;
+        }
+        #clearSearch:hover { color: var(--text); }
+        .search-results-info {
+            font-size: 0.78rem; color: var(--text-muted); margin-top: 5px; padding-left: 2px;
+        }
+
+        /* ===== NAV GRID ===== */
+        .nav-grid {
+            display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; margin-bottom: 18px;
+        }
+        @media (max-width: 600px) { .nav-grid { grid-template-columns: repeat(4, 1fr); } }
+        .day-btn {
+            padding: 9px 5px; font-size: 0.75rem; font-weight: 600;
+            border: 1.5px solid var(--btn-border); border-radius: 9px; cursor: pointer;
+            transition: all 0.18s; background: var(--btn-bg); color: var(--btn-color);
+            font-family: 'Inter', sans-serif; line-height: 1.3; text-align: center;
+        }
+        .day-btn:hover { opacity: 0.75; }
+        .day-btn.active {
+            background: var(--btn-active-bg); color: var(--btn-active-color);
+            border-color: var(--accent); box-shadow: 0 0 10px rgba(108,142,245,0.18);
+        }
+        .day-btn .date-label { display: block; font-size: 0.65rem; color: inherit; opacity: 0.7; font-weight: 400; margin-top: 1px; }
+
+        /* ===== DISPLAY AREA ===== */
+        #displayArea {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 14px; overflow: hidden; box-shadow: var(--shadow);
+        }
+        .empty-state { text-align: center; padding: 56px 24px; color: var(--text-muted); }
+        .empty-state .icon { font-size: 2.8rem; margin-bottom: 10px; }
+        .empty-state p { font-family: 'Hind Siliguri', sans-serif; font-size: 1rem; }
+        .day-header {
+            padding: 16px 22px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 8px; background: var(--surface2);
+        }
+        .day-header h2 { font-size: 1rem; font-weight: 600; color: var(--text); }
+        .word-count-badge {
+            background: var(--badge-bg); color: var(--badge-text);
+            border: 1px solid var(--badge-border); border-radius: 20px;
+            padding: 3px 13px; font-size: 0.76rem; font-weight: 600;
+        }
+        .double-click-hint {
+            font-size: 0.72rem; color: var(--text-muted);
+            font-style: italic; padding: 7px 22px 0; display: block;
+        }
+
+        /* ===== TABLE ===== */
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            padding: 11px 16px; text-align: left; font-size: 0.68rem; font-weight: 600;
+            letter-spacing: 0.07em; text-transform: uppercase;
+            color: var(--header-th); background: var(--header-th-bg); border-bottom: 1px solid var(--border);
+        }
+        thead th:nth-child(1) { width: 20%; }
+        thead th:nth-child(2) { width: 25%; }
+        thead th:nth-child(3) { width: 55%; }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; cursor: pointer; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--hover-row); }
+        tbody tr.in-revision { background: var(--selected-row) !important; }
+        td { padding: 13px 16px; vertical-align: top; line-height: 1.55; }
+        .word-cell { font-size: 0.93rem; font-weight: 700; color: var(--word-color); letter-spacing: 0.01em; display: flex; align-items: center; gap: 6px; }
+        .word-cell .pin-icon { font-size: 0.75rem; opacity: 0.7; }
+        .bn-cell { font-family: 'Hind Siliguri', sans-serif; font-size: 0.88rem; color: var(--text); font-weight: 500; }
+        .m-cell { font-family: 'Hind Siliguri', sans-serif; font-size: 0.85rem; color: var(--mnemonic-color); font-style: italic; }
+        .no-results { text-align: center; padding: 36px; color: var(--text-muted); font-size: 0.9rem; }
+
+        /* ===== REVISION PAGE ===== */
+        #revisionPage {
+            display: none; background: var(--surface);
+            border: 1px solid var(--border); border-radius: 14px;
+            overflow: hidden; box-shadow: var(--shadow);
+        }
+        .rev-page-header {
+            padding: 16px 22px; border-bottom: 1px solid var(--border);
+            background: var(--surface2); display: flex; align-items: center;
+            justify-content: space-between; flex-wrap: wrap; gap: 10px;
+        }
+        .rev-page-header h2 { font-size: 1rem; font-weight: 600; color: var(--text); }
+        .back-btn {
+            padding: 7px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; border: 1.5px solid var(--btn-border);
+            background: var(--btn-bg); color: var(--btn-color);
+            transition: all 0.18s; font-family: 'Inter', sans-serif;
+        }
+        .back-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .rev-actions {
+            padding: 14px 22px; border-bottom: 1px solid var(--border);
+            display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+        }
+        .copy-btn {
+            padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; border: 1.5px solid var(--accent);
+            background: var(--accent); color: #fff;
+            transition: opacity 0.18s; font-family: 'Inter', sans-serif;
+        }
+        .copy-btn:hover { opacity: 0.85; }
+        .clear-rev-btn {
+            padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+            cursor: pointer; border: 1.5px solid #e53e3e;
+            background: transparent; color: #e53e3e;
+            transition: all 0.18s; font-family: 'Inter', sans-serif;
+        }
+        .clear-rev-btn:hover { background: #e53e3e; color: #fff; }
+        .rev-word-box {
+            padding: 22px 22px 28px;
+            font-family: 'Inter', sans-serif; font-size: 0.95rem;
+            color: var(--text); line-height: 1.9; word-break: break-word;
+        }
+        .rev-word-box .rev-word-tag {
+            display: inline-block; background: var(--surface2);
+            border: 1px solid var(--border); border-radius: 6px;
+            padding: 3px 10px; margin: 3px 4px; font-weight: 600;
+            color: var(--word-color); font-size: 0.88rem;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .rev-word-tag:hover { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+        [data-theme="dark"] .rev-word-tag:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); color: #fca5a5; }
+        .rev-empty { padding: 44px; text-align: center; color: var(--text-muted); }
+
+        /* ===== REVIEW DAY ===== */
+        .review-card { padding: 36px 28px; text-align: center; }
+        .review-card h3 { font-size: 1.2rem; color: var(--accent2); margin-bottom: 10px; }
+        .review-card p { font-family: 'Hind Siliguri', sans-serif; color: var(--text-muted); max-width: 480px; margin: 0 auto; line-height: 1.7; }
+
+        /* toast */
+        #toast {
+            position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(60px);
+            background: #1a1a2e; color: #fff; padding: 10px 22px; border-radius: 22px;
+            font-size: 0.82rem; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 999; white-space: nowrap;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <label class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">
+                <span id="themeIcon">🌙</span>
+                <div class="toggle-track" onclick="toggleTheme()">
+                    <div class="toggle-knob"></div>
+                </div>
+                <span id="themeLabel">Dark Mode</span>
+            </label>
+        </div>
+        <button class="rev-btn" onclick="showRevisionPage()">
+            📌 Revision List <span class="rev-badge" id="revBadge">0</span>
+        </button>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>📚 Barron's 333 Vocabulary Master</h1>
+        <p class="subtitle">জুন ৯ থেকে ২২ পর্যন্ত ১৪ দিনের পূর্ণাঙ্গ রুটিন</p>
+        <div class="stats-row">
+            <div class="stat-chip">মোট শব্দ: <span>৩৩৩</span></div>
+            <div class="stat-chip">মোট দিন: <span>১৪</span></div>
+            <div class="stat-chip">প্রতিদিন: <span>~২৪ শব্দ</span></div>
+        </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="যেকোনো শব্দ বা বাংলা অর্থ দিয়ে খুঁজুন... (Search any word)" autocomplete="off">
+        <button id="clearSearch" onclick="clearSearch()">✕</button>
+    </div>
+    <div class="search-results-info" id="searchInfo"></div>
+
+    <!-- NAV -->
+    <div class="nav-grid" id="navGrid"></div>
+
+    <!-- MAIN DISPLAY -->
+    <div id="displayArea">
+        <div class="empty-state">
+            <div class="icon">👆</div>
+            <p>পড়া শুরু করতে উপরের যেকোনো একটি Day বাটনে ক্লিক করুন!</p>
+        </div>
+    </div>
+
+    <!-- REVISION PAGE -->
+    <div id="revisionPage">
+        <div class="rev-page-header">
+            <h2>📌 Revision List</h2>
+            <button class="back-btn" onclick="hideRevisionPage()">← Back</button>
+        </div>
+        <div class="rev-actions">
+            <button class="copy-btn" onclick="copyRevisionList()">📋 Copy as Text</button>
+            <button class="clear-rev-btn" onclick="clearRevisionList()">🗑 Clear All</button>
+        </div>
+        <div class="rev-word-box" id="revWordBox">
+            <div class="rev-empty">কোনো শব্দ এখনো যোগ করা হয়নি।<br><small>কোনো শব্দে ডাবল-ক্লিক করলে এখানে যোগ হবে।</small></div>
+        </div>
+    </div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+const dates = ["June 9","June 10","June 11","June 12","June 13","June 14","June 15","June 16","June 17","June 18","June 19","June 20","June 21","June 22"];
+let currentDay = null;
+let isSearchMode = false;
+let revisionWords = new Set();
+
+// ===== THEME =====
+function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
+    document.getElementById('themeLabel').textContent = isDark ? 'Dark Mode' : 'Light Mode';
+}
+
+// ===== VOCABULARY DATA =====
+const vocabularyData = {
+    1: [
+        {w:"Abate",bn:"কমানো, প্রশমিত করা",m:"Bet করলে টাকা Abate (কমে) যায়।"},
+        {w:"Aberrant",bn:"বিচ্যুতি, অস্বাভাবিক",m:"Ab + Error: স্বাভাবিক নিয়মে কোনো ভুল থাকা।"},
+        {w:"Abeyance",bn:"স্থগিত অবস্থা",m:"Absence এর মতো স্থগিত থাকা।"},
+        {w:"Abscond",bn:"পালিয়ে যাওয়া",m:"এক Second-এ সবকিছু নিয়ে পালিয়ে যাওয়া।"},
+        {w:"Abstemious",bn:"সংযমী",m:"Abstain থেকে Abstemious, বিলাসিতা ত্যাগ করা।"},
+        {w:"Admonish",bn:"সতর্ক করা",m:"টাকা (Money) নষ্ট করায় বস Admonish করলেন।"},
+        {w:"Adulterate",bn:"বিশুদ্ধতা নষ্ট করা",m:"Adult হবার সাথে সাথে ছেলেরা ভেজাল হয়ে যায়।"},
+        {w:"Aesthetic",bn:"নান্দনিক",m:"সুন্দর স্থির (Static) রূপ দেখে Aesthetic আনন্দ পাওয়া।"},
+        {w:"Aggregate",bn:"সমষ্টিগত",m:"Gate-এর সামনে সবার সমষ্টিগত Agreement।"},
+        {w:"Alacrity",bn:"তৎপরতা",m:"Electricity-এর মতো চঞ্চল ও তৎপর।"},
+        {w:"Alleviate",bn:"উপশম করা",m:"All + Eat: সব ব্যথা যেন খেয়ে ফেলা।"},
+        {w:"Amalgamate",bn:"মিশ্রিত করা",m:"সব গেম (Game) বা টিমকে Amalgamate করা।"},
+        {w:"Ambiguous",bn:"অস্পষ্ট",m:"বুঝতে বড় Guess করতে হয় কারণ তা Ambiguous।"},
+        {w:"Ambivalence",bn:"দোটানা",m:"মনে যখন দুই (Bi) ধরনের অনুভূতি থাকে।"},
+        {w:"Ameliorate",bn:"উন্নত করা",m:"A million rate-এ পরিস্থিতি উন্নত করা।"},
+        {w:"Anachronism",bn:"কালবিরোধ",m:"সময়ের (Chron) সাথে যা বেমানান।"},
+        {w:"Analogous",bn:"সাদৃশ্যপূর্ণ",m:"Analysis করে মিল বা Analogy খুঁজে পাওয়া।"},
+        {w:"Anarchy",bn:"অরাজকতা",m:"শাসন নেই যেখানে, সেখানেই Anarchy।"},
+        {w:"Anomalous",bn:"অস্বাভাবিক",m:"যা Normal নয় বরং Anomalous।"},
+        {w:"Antipathy",bn:"তীব্র ঘৃণা",m:"Anti মনোভাব রাখা মানেই Antipathy থাকা।"},
+        {w:"Apathy",bn:"ঔদাসীন্য",m:"Sympathy নেই যার, সেই হলো Apathy।"},
+        {w:"Appease",bn:"শান্ত করা",m:"কাউকে Please করে শান্ত করা।"},
+        {w:"Apprise",bn:"জানানো",m:"নতুন অ্যাপের উত্থান (Rise) সম্পর্কে Apprise করা।"},
+        {w:"Approbation",bn:"অনুমোদন",m:"Approval-এর জন্য Approbation প্রয়োজন।"}
+    ],
+    2: [
+        {w:"Appropriate",bn:"উপযুক্ত, নির্দিষ্ট কাজে লাগানো",m:"নির্দিষ্ট প্রোফাইল বা অ্যাপের জন্য যা Appropriate।"},
+        {w:"Arduous",bn:"শ্রমসাধ্য",m:"Hard কাজ যা Arduous।"},
+        {w:"Artless",bn:"সরল",m:"যার মধ্যে কোনো Art বা মারপ্যাঁচ নেই।"},
+        {w:"Ascetic",bn:"তপস্বী",m:"অত্যন্ত কৃচ্ছ্রসাধন করা।"},
+        {w:"Assiduous",bn:"পরিশ্রমী",m:"একাগ্র হয়ে কাজ করা।"},
+        {w:"Assuage",bn:"শান্ত করা",m:"চিনির (Sugar) মতো ব্যথা প্রশমিত করা।"},
+        {w:"Attenuate",bn:"ক্ষীণ করা",m:"শক্তি ১০ ভাগে ভাগ করে দিলে তা Attenuate হয়।"},
+        {w:"Audacious",bn:"দুঃসাহসী",m:"Audi চালিয়ে দুঃসাহস দেখানো।"},
+        {w:"Austere",bn:"কঠোর",m:"অলংকারহীন এবং শান্ত।"},
+        {w:"Aver",bn:"দৃঢ়ভাবে বলা",m:"Verify করে Aver করা।"},
+        {w:"Banal",bn:"গতানুগতিক, তুচ্ছ",m:"বোরিং বা মামুলি কথা।"},
+        {w:"Belie",bn:"মিথ্যা প্রমাণ করা",m:"ভেতরের রূপ গোপন করা।"},
+        {w:"Beneficent",bn:"দানশীল",m:"Benefit বা উপকার করাই যার কাজ।"},
+        {w:"Bolster",bn:"শক্তিশালী করা",m:"সমর্থন দিয়ে কাউকে Bolster করা।"},
+        {w:"Bombastic",bn:"বাগাড়ম্বরপূর্ণ",m:"বোমার মতো শব্দ কিন্তু অর্থ কম।"},
+        {w:"Boorish",bn:"অভদ্র",m:"অমার্জিত আচরণ।"},
+        {w:"Burgeon",bn:"দ্রুত বাড়া",m:"বার্গার খেলে যেমন শরীর বাড়ে।"},
+        {w:"Burnish",bn:"চকচকে করা",m:"পলিশ করে উজ্জ্বল করা।"},
+        {w:"Buttress",bn:"সমর্থন দেওয়া",m:"ভিত্তি হিসেবে কাজ করা।"},
+        {w:"Cacophonous",bn:"কর্কশ শব্দ",m:"ফোনের ওপাশে কর্কশ আওয়াজ।"},
+        {w:"Capricious",bn:"খামখেয়ালি",m:"হুটহাট সিদ্ধান্ত বদলানো।"},
+        {w:"Castigation",bn:"তিরস্কার",m:"কড়া সমালোচনা করা।"},
+        {w:"Catalyst",bn:"অনুঘটক",m:"কাজের গতি বাড়িয়ে দেয় যে।"},
+        {w:"Caustic",bn:"তীব্র বিদ্রূপাত্মক",m:"শরীরের চামড়া পুড়িয়ে দেওয়ার মতো মন্তব্য।"}
+    ],
+    3: [
+        {w:"Chicanery",bn:"প্রতারণা, ছলচাতুরি",m:"Chicken চুরি করার জন্য চাতুর্য বা Chicanery করা।"},
+        {w:"Coagulate",bn:"জমাট বাঁধা",m:"Co-Aggregate: একসাথে হয়ে জমাট বাঁধা।"},
+        {w:"Coda",bn:"সমাপ্তি অংশ (সংগীতের)",m:"Code: প্রোগ্রামের শেষে সমাপনী Code বা Coda।"},
+        {w:"Cogent",bn:"জোরালো, অকাট্য",m:"শক্তিশালী Agent এর Cogent যুক্তি।"},
+        {w:"Commensurate",bn:"সমানুপাতিক",m:"Rate: কাজের Rate অনুযায়ী সমান পারিশ্রমিক।"},
+        {w:"Compendium",bn:"সারমর্ম",m:"Pen: কলম দিয়ে সংক্ষিপ্ত Compendium লেখা।"},
+        {w:"Complaisant",bn:"বিনয়ী, দয়ালু",m:"Please: অন্যকে Please করতে চায় যে সে Complaisant।"},
+        {w:"Compliant",bn:"বাধ্য, অনুগত",m:"Comply: নিয়ম Comply করে যে সে Compliant।"},
+        {w:"Conciliatory",bn:"সমঝোতা বা শান্তকারী",m:"Council: কাউন্সিল মিটিং এ Conciliatory বা সমঝোতা করা।"},
+        {w:"Condone",bn:"ক্ষমা করা, অগ্রাহ্য করা",m:"Done: ভুল হয়ে গেছে, এখন তা Condone (ক্ষমা) করা।"},
+        {w:"Confound",bn:"বিভ্রান্ত করা",m:"Found: খুঁজে না পেয়ে অবাক বা Confound হওয়া।"},
+        {w:"Connoisseur",bn:"শিল্প সমঝদার",m:"Know: যে আর্ট সম্পর্কে অনেক জানে।"},
+        {w:"Contention",bn:"প্রতিযোগিতা বা বিবাদ",m:"Tension: প্রতিযোগিতায় থাকলে মনে Tension বাড়ে।"},
+        {w:"Contentious",bn:"ঝগড়াটে",m:"Content: ইন্টারনেটের কন্টেন্ট নিয়ে ঝগড়া করা।"},
+        {w:"Contrite",bn:"অনুতপ্ত",m:"Count: নিজের ভুল Count করে Contrite হওয়া।"},
+        {w:"Conundrum",bn:"ধাঁধা, জটিল সমস্যা",m:"Drum: ড্রামের ভেতরে কী আছে তা এক Conundrum।"},
+        {w:"Converge",bn:"একত্রিত হওয়া",m:"Verge: এক কিনারে সবাই Converge হওয়া।"},
+        {w:"Convoluted",bn:"জটিল, প্যাঁচালো",m:"Volume: বড় ভলিউমের বই যা পড়া Convoluted।"},
+        {w:"Craven",bn:"কাপুরুষ",m:"Cave: ভয়ে গুহায় লুকিয়ে থাকা Craven।"},
+        {w:"Daunt",bn:"ভয় দেখানো",m:"Aunt: বড় আন্ট রাগ করলে Daunt বা ভয় লাগে।"},
+        {w:"Decorum",bn:"শালীনতা, শিষ্টাচার",m:"Decor: ঘর Decorate করার মতো Decorum বজায় রাখা।"},
+        {w:"Default",bn:"খেলার বা ঋণের খেলাপি",m:"Fault: নিজের Fault এর কারণে পেমেন্ট Default হওয়া।"},
+        {w:"Deference",bn:"শ্রদ্ধা, সম্মান",m:"Refer: বড়দের Refer করা বা শ্রদ্ধা দেখানো।"},
+        {w:"Delineate",bn:"বর্ণনা করা, চিত্রায়িত করা",m:"Line: লাইন দিয়ে ছবি এঁকে বর্ণনা করা।"}
+    ],
+    4: [
+        {w:"Denigrate",bn:"কলঙ্কিত করা, নিন্দা করা",m:"Deny + Great: কারো মহত্ত্ব কে অস্বীকার করা।"},
+        {w:"Deride",bn:"উপহাস করা",m:"Ride: কারো ওপর দিয়ে Ride করে তাকে উপহাস করা।"},
+        {w:"Derivative",bn:"উৎপন্ন, মৌলিক নয়",m:"Drive: অন্য জায়গা থেকে Drive বা উৎপন্ন করা।"},
+        {w:"Desiccate",bn:"শুষ্ক করা",m:"Cake: কেক যেমন শুষ্ক বা Desiccate হয়।"},
+        {w:"Desultory",bn:"অসংলগ্ন, লক্ষ্যহীন",m:"Result: রেজাল্ট নিয়ে কোনো ভাবনা নেই যার।"},
+        {w:"Deterrent",bn:"প্রতিরোধক",m:"Rent: ভাড়া বাড়ানো যা নতুন ভাড়াটে আসতে বাধা দেয়।"},
+        {w:"Diatribe",bn:"তীব্র সমালোচনা",m:"Tribal: উপজাতির প্রতি তীব্র গালিগালাজ বা Diatribe।"},
+        {w:"Dichotomy",bn:"দ্বিবিভাজন",m:"Di + Cut: দুই ভাগে ভাগ করা।"},
+        {w:"Diffidence",bn:"আত্মবিশ্বাসহীনতা",m:"Difficulty in Confidence: আত্মবিশ্বাসের অভাব।"},
+        {w:"Diffuse",bn:"ছড়িয়ে পড়া",m:"Fuse: ফিউজ হয়ে সব দিকে আলো ছড়িয়ে পড়া।"},
+        {w:"Digression",bn:"অপ্রাসঙ্গিক কথা",m:"Direction: সঠিক দিক থেকে সরে যাওয়া।"},
+        {w:"Dirge",bn:"শোকসংগীত",m:"Death + Song: মৃত্যুর পর গাওয়া গান।"},
+        {w:"Disabuse",bn:"ভুল ধারণা ভেঙে দেওয়া",m:"Dis + Abuse: কারো ভুল ব্যবহারের ধারণা পাল্টে দেওয়া।"},
+        {w:"Discerning",bn:"সূক্ষ্মদর্শী",m:"Learn: যে শিখতে বা বুঝতে পারে।"},
+        {w:"Discordant",bn:"বেসুরো, অমিল",m:"Discord: ডিসকর্ডে সবার অমিল বা ঝগড়া।"},
+        {w:"Discredit",bn:"সুনাম নষ্ট করা",m:"Dis + Credit: ক্রেডিট বা সম্মান কেড়ে নেওয়া।"},
+        {w:"Discrepancy",bn:"পার্থক্য, অমিল",m:"Difference: তথ্যের মধ্যে বিশাল গ্যাপ।"},
+        {w:"Discrete",bn:"আলাদা, পৃথক",m:"Secret: গোপন এবং আলাদা কোনো কিছু।"},
+        {w:"Disingenuous",bn:"অসরল, কপট",m:"Dis + Genuine: যে জেনুইন বা খাঁটি নয়।"},
+        {w:"Disinterested",bn:"নিরপেক্ষ, স্বার্থহীন",m:"Interest নেই যার কোনো পক্ষে।"},
+        {w:"Disjointed",bn:"বিচ্ছিন্ন, অসংলগ্ন",m:"Dis + Joint: জয়েন্ট খুলে যাওয়া।"},
+        {w:"Dismiss",bn:"বরখাস্ত করা, অগ্রাহ্য করা",m:"Miss: গুরুত্ব না দিয়ে মিস করে যাওয়া।"},
+        {w:"Disparage",bn:"তুচ্ছ করা, ছোট করা",m:"Display: কারো খারাপ দিক ডিসপ্লে করা।"},
+        {w:"Disparate",bn:"ভিন্নধর্মী, অসদৃশ",m:"Separate: একদম আলাদা বা সেপারেট।"}
+    ],
+    5: [
+        {w:"Dissemble",bn:"ভান করা, গোপন করা",m:"Dis + Assemble: ভুলভাবে সাজানো বা ভান করা।"},
+        {w:"Disseminate",bn:"প্রচার করা",m:"Semi-Net: নেটের মাধ্যমে সব দিকে প্রচার করা।"},
+        {w:"Dissolution",bn:"বিলুপ্তি, সমাপ্তি",m:"Solution: সলিউশন হয়ে সব মিশে যাওয়া বা শেষ হওয়া।"},
+        {w:"Dissonance",bn:"অনৈক্য, বেসুরো শব্দ",m:"Distance in Sound: শব্দের মধ্যে অমিল।"},
+        {w:"Distend",bn:"স্ফীত হওয়া",m:"Extend: প্রসারিত হওয়া বা ফুলে ওঠা।"},
+        {w:"Distill",bn:"পরিশোধন করা",m:"Still: স্থির করে বিশুদ্ধ পানি বের করা।"},
+        {w:"Diverge",bn:"সরে যাওয়া, ভিন্ন হওয়া",m:"Diverse: ভিন্ন দিকে চলে যাওয়া।"},
+        {w:"Divest",bn:"বঞ্চিত করা, ত্যাগ করা",m:"Dis + Vest: পোশাক খুলে ফেলা বা ক্ষমতা কেড়ে নেওয়া।"},
+        {w:"Document",bn:"প্রমাণসহ উপস্থাপন",m:"Doc: কাগজপত্রের মাধ্যমে প্রমাণ দেওয়া।"},
+        {w:"Dogmatic",bn:"একগুঁয়ে, গোঁড়া",m:"Dog: কুকুরের মতো কামড়ে ধরে থাকা নিজের বিশ্বাসকে।"},
+        {w:"Dormant",bn:"সুপ্ত, নিষ্ক্রিয়",m:"Door: দরজার আড়ালে ঘুমিয়ে থাকা।"},
+        {w:"Dupe",bn:"প্রতারিত করা",m:"Duplicate: ডুপ্লিকেট জিনিস দিয়ে ঠকানো।"},
+        {w:"Ebullient",bn:"উচ্ছ্বসিত, টগবগে",m:"Boil: উত্তেজনায় টগবগ করে ফোটা।"},
+        {w:"Eclectic",bn:"সারগ্রাহী, বিচিত্র",m:"Select: বিভিন্ন জায়গা থেকে সেরাটা বেছে নেওয়া।"},
+        {w:"Efficacy",bn:"কার্যকারিতা",m:"Efficiency: কতটুকু কাজ করতে পারে।"},
+        {w:"Effrontery",bn:"ধৃষ্টতা, নির্লজ্জতা",m:"Front: সামনে এসে অভদ্রতা করা।"},
+        {w:"Elegy",bn:"শোকগাথা",m:"Lament: করুণ কবিতা।"},
+        {w:"Elicit",bn:"বের করে আনা",m:"Exit: ভেতর থেকে কোনো তথ্য বের করা।"},
+        {w:"Embellish",bn:"অলঙ্কৃত করা",m:"Bell: ঘণ্টা দিয়ে সাজানো।"},
+        {w:"Empirical",bn:"পরীক্ষামূলক",m:"Empire: অভিজ্ঞতার ওপর ভিত্তি করে শাসন করা।"},
+        {w:"Emulate",bn:"অনুকরণ করা",m:"Simulate: অনুকরণ করে সমান হতে চাওয়া।"},
+        {w:"Endemic",bn:"আঞ্চলিক",m:"Demo: নির্দিষ্ট ডেমোগ্রাফিক বা এলাকার রোগ।"},
+        {w:"Enervate",bn:"দুর্বল করা",m:"Energy + Evaporate: এনার্জি বা শক্তি উবে যাওয়া।"},
+        {w:"Engender",bn:"জন্ম দেওয়া, ঘটানো",m:"Generate: তৈরি করা বা উৎপন্ন করা।"}
+    ],
+    6: [
+        {w:"Ephemeral",bn:"ক্ষণস্থায়ী",m:"E-Phone-Meal: ফোনের চার্জ যেমন অল্প সময় থাকে।"},
+        {w:"Equanimity",bn:"মানসিক স্থিরতা",m:"Equal-Enemy: শত্রুর সামনেও সমান বা স্থির থাকা।"},
+        {w:"Equivocate",bn:"দ্ব্যর্থবোধক কথা বলা",m:"Equal-Voice: দুই দিকেই সমান তালে কথা বলা।"},
+        {w:"Erudite",bn:"পন্ডিত",m:"Educated: অত্যন্ত শিক্ষিত বা জ্ঞানী।"},
+        {w:"Esoteric",bn:"গূঢ়/গোপন",m:"Isolated: শুধু কয়েকজনের বোঝার জন্য আলাদা করা।"},
+        {w:"Eulogy",bn:"প্রশংসা গাথা",m:"Mythology: বীরদের নিয়ে প্রশংসামূলক গান।"},
+        {w:"Euphemism",bn:"শ্রুতিমধুর শব্দ",m:"Pleasant: অপ্রিয় কথা সুন্দর করে বলা।"},
+        {w:"Exacerbate",bn:"অধিকতর খারাপ করা",m:"Ex-Acid: পরিস্থিতিকে এসিডের মতো আরও পোড়ানো।"},
+        {w:"Exculpate",bn:"দোষমুক্ত করা",m:"Ex-Culprit: এখন আর কালপ্রিট (দোষী) নয়।"},
+        {w:"Exigency",bn:"জরুরি অবস্থা",m:"Exit-Urgency: দ্রুত প্রস্থান বা জরুরি কাজ।"},
+        {w:"Extrapolation",bn:"অনুমান/ভবিষ্যদ্বাণী",m:"Extra-Population: ডাটা দিয়ে ভবিষ্যতের হিসাব করা।"},
+        {w:"Facetious",bn:"হাস্যরসাত্মক",m:"Face-Serious: সিরিয়াস মুখে মজার কথা বলা।"},
+        {w:"Facilitate",bn:"সহজ করা",m:"Facility: কাজের জন্য সুবিধা তৈরি করে দেওয়া।"},
+        {w:"Fallacious",bn:"ভ্রান্ত/ভুল",m:"False-Analysis: ভুল যুক্তির ওপর ভিত্তি করা।"},
+        {w:"Fatuous",bn:"বোকা/জড়বুদ্ধি",m:"Fat-uous: অলস ও স্থবির চিন্তার অধিকারী।"},
+        {w:"Fawning",bn:"তোষামোদকারী",m:"Fan: অন্ধ ভক্ত বা ফ্যানের মতো তোষামোদ করা।"},
+        {w:"Felicitous",bn:"যথাযথ/উপযুক্ত",m:"Facility: সঠিক সময়ে সঠিক সুবিধা পাওয়া।"},
+        {w:"Fervor",bn:"তীব্র আবেগ",m:"Fever: উত্তেজনায় শরীরের তাপমাত্রা বাড়ার মতো আবেগ।"},
+        {w:"Flag",bn:"শক্তি কমে যাওয়া",m:"Flag-Down: পতাকার মতো শক্তি নিচে নেমে যাওয়া।"},
+        {w:"Fledgling",bn:"অনভিজ্ঞ/নবীন",m:"Flying: সবে উড়তে শেখা ছোট পাখি।"},
+        {w:"Flout",bn:"অমান্য করা/উপহাস করা",m:"Float: নিয়ম ভাসিয়ে বা উড়িয়ে দেওয়া।"},
+        {w:"Foment",bn:"উস্কানি দেওয়া",m:"Movement: কোনো আন্দোলন বা ঝামেলা শুরু করা।"},
+        {w:"Forestall",bn:"আগেভাগে বাধা দেওয়া",m:"Fore-Stall: সামনেই স্টল বা দেয়াল তুলে বাধা দেওয়া।"},
+        {w:"Frugality",bn:"মিতব্যয়িতা",m:"Fruit-Only: শুধু ফল খেয়ে টাকা বাঁচানো।"}
+    ],
+    7: [
+        {w:"Futile",bn:"নিষ্ফল/বৃথা",m:"Utilize না হওয়া: কোনো কাজেই না আসা।"},
+        {w:"Gainsay",bn:"অস্বীকার করা",m:"Against-Say: বিপক্ষে গিয়ে কথা বলা।"},
+        {w:"Garrulous",bn:"বাচাল",m:"বেশি কথা বলার অভ্যাস।"},
+        {w:"Goad",bn:"উৎসাহিত করা/তাড়না দেওয়া",m:"Go-Ahead: কাউকে সামনে এগিয়ে দেওয়া।"},
+        {w:"Gouge",bn:"গর্ত করা/অতিরিক্ত মূল্য রাখা",m:"Garage: গ্যারেজে গাড়ি রাখলে পকেট ফুটো করে দেয়।"},
+        {w:"Grandiloquent",bn:"বাগাড়ম্বরপূর্ণ",m:"Grand-Eloquent: বড় বড় শব্দে কথা বলা।"},
+        {w:"Gregarious",bn:"মিশুক/দলপ্রিয়",m:"Group: সবার সাথে গ্রুপে থাকতে পছন্দ করে যে।"},
+        {w:"Guileless",bn:"অকপট/সরল",m:"Guilt-Less: যার মনে কোনো পাপ বা ছলনা নেই।"},
+        {w:"Gullible",bn:"সহজেই বিশ্বাস করে এমন",m:"Gull-able: যাকে সহজে গিলে বা ঠকানো যায়।"},
+        {w:"Harangue",bn:"তীব্র বক্তৃতা",m:"Hang: বক্তৃতায় মানুষকে হ্যাং করে ফেলা।"},
+        {w:"Homogenous",bn:"সমজাতীয়",m:"Homo (Same): একই জিন বা গোত্রের।"},
+        {w:"Hyperbole",bn:"অত্যুক্তি",m:"Hyper: অতিরিক্ত বাড়িয়ে বলা।"},
+        {w:"Iconoclast",bn:"প্রথা ভাঙা",m:"Icon-Clash: প্রচলিত আইকন বা বিশ্বাসের সাথে লড়াই।"},
+        {w:"Idolatry",bn:"প্রতিমা পূজা",m:"Idol-Try: মূর্তিকে ভক্তি করার চেষ্টা করা।"},
+        {w:"Immutable",bn:"অপরিবর্তনীয়",m:"Mute: যাকে পরিবর্তন করা যায় না।"},
+        {w:"Impair",bn:"ক্ষতি করা",m:"Im-Pair: জোড়া নষ্ট করে দেওয়া।"},
+        {w:"Impassive",bn:"আবেগহীন",m:"Passive: একদম শান্ত বা নিস্পৃহ।"},
+        {w:"Impede",bn:"বাধা দেওয়া",m:"Speed-Limit: গতিরোধ করা।"},
+        {w:"Impermeable",bn:"অভেদ্য",m:"Permit-No: ভেতরে ঢোকার পারমিট নেই যেখানে।"},
+        {w:"Imperturbable",bn:"অবিচলিত",m:"Turbulence-No: কোনো সমস্যা যাকে টলাতে পারে না।"},
+        {w:"Impervious",bn:"অভেদ্য/অপ্রতিরোধ্য",m:"In-Passable: যার ভেতর দিয়ে কিছু যাওয়া সম্ভব নয়।"},
+        {w:"Implacable",bn:"অদম্য/শান্ত করা যায় না",m:"Place-No: যাকে কোনো জায়গায় শান্ত রাখা যায় না।"},
+        {w:"Implicit",bn:"অন্তর্নিহিত/অস্পষ্ট",m:"In-Hidden: যা সরাসরি বলা হয়নি।"},
+        {w:"Implode",bn:"ভেতরে বিস্ফোরণ হওয়া",m:"In-Explode: বাইরের বদলে ভেতরে ফাটা।"}
+    ],
+    8: [
+        {w:"Inadvertently",bn:"অনিচ্ছাকৃতভাবে",m:"In-Advertise: ইচ্ছা করে প্রচার না করা।"},
+        {w:"Inchoate",bn:"অপরিণত/প্রাথমিক",m:"In-Chaos: শুরুতে যে অগোছালো অবস্থা থাকে।"},
+        {w:"Incongruity",bn:"অসামঞ্জস্য",m:"In-Congress: কংগ্রেসের ভেতর যেমন অমিল থাকে।"},
+        {w:"Inconsequential",bn:"তুচ্ছ/অপ্রাসঙ্গিক",m:"No-Sequence: যার কোনো গুরুত্ব নেই।"},
+        {w:"Incorporate",bn:"একীভূত করা",m:"Corporate: সব বিভাগকে এক করা।"},
+        {w:"Indeterminate",bn:"অনির্ধারিত",m:"Determine-No: যা আগে থেকে ঠিক করা নেই।"},
+        {w:"Indigence",bn:"চরম দারিদ্র্য",m:"In-Pauper: চরম অভাবের মধ্যে থাকা।"},
+        {w:"Indolent",bn:"অলস",m:"In-Door: সারাদিন ঘরের ভেতর শুয়ে থাকা।"},
+        {w:"Inert",bn:"জড়/নিষ্ক্রিয়",m:"Inter: স্থির বা নড়াচড়া করতে পারে না এমন।"},
+        {w:"Ingenuous",bn:"সরল/অকপট",m:"Genuine: যে একদম জেনুইন বা খাঁটি।"},
+        {w:"Inherent",bn:"সহজাত",m:"Inherit: জন্মগতভাবে যা পাওয়া যায়।"},
+        {w:"Innocuous",bn:"ক্ষতিহীন",m:"In-No-Cause: যা কোনো ক্ষতির কারণ হয় না।"},
+        {w:"Insensible",bn:"অচেতন/অসার",m:"Sense-Less: যার সেন্স বা অনুভূতি নেই।"},
+        {w:"Insinuate",bn:"আভাস দেওয়া",m:"Inside-Wait: ইশারায় কোনো কথা বলা।"},
+        {w:"Insipid",bn:"নীরস/পানসে",m:"In-Sip: এক চুমুকে গিলে ফেলা যায় এমন বোরিং কিছু।"},
+        {w:"Insularity",bn:"সংকীর্ণমনা",m:"Island: দ্বীপের মতো একা ও সীমাবদ্ধ থাকা।"},
+        {w:"Intractable",bn:"অবাধ্য/একগুঁয়ে",m:"In-Track-No: যাকে ট্র্যাকে আনা যায় না।"},
+        {w:"Intransigence",bn:"আপসহীনতা",m:"Transit-No: কোনো অবস্থাতেই নড়বে না এমন।"},
+        {w:"Inundate",bn:"প্লাবিত করা",m:"In-Under: পানির নিচে তলিয়ে দেওয়া।"},
+        {w:"Inured",bn:"অভ্যস্ত/কঠোর",m:"In-Hard: কষ্ট সয়ে সয়ে শক্ত হয়ে যাওয়া।"},
+        {w:"Invective",bn:"গালিগালাজ",m:"Active-Attack: আক্রমণাত্মক ভাষায় কথা বলা।"},
+        {w:"Irascible",bn:"একগুঁয়ে/রাগী",m:"I-Ras: রাগী বা রাশভারী মানুষ।"},
+        {w:"Irresolute",bn:"দোটানায় থাকা",m:"Resolution-No: সিদ্ধান্ত নিতে না পারা।"},
+        {w:"Itinerary",bn:"ভ্রমণসূচি",m:"Train-Diary: ভ্রমণের সব প্ল্যান লেখা যেখানে।"}
+    ],
+    9: [
+        {w:"Laconic",bn:"স্বল্পভাষী",m:"Lack of Words: কম কথায় বড় অর্থ বোঝানো।"},
+        {w:"Lassitude",bn:"অবসাদ/ক্লান্তি",m:"Lazy-Attitude: আলস্য বা ক্লান্ত মনোভাব।"},
+        {w:"Latent",bn:"সুপ্ত/লুকায়িত",m:"Late-Talent: যে প্রতিভা পরে প্রকাশ পায়।"},
+        {w:"Laud",bn:"প্রশংসা করা",m:"Loud-Applause: জোরে হাততালি দিয়ে প্রশংসা।"},
+        {w:"Lethargic",bn:"ক্লান্ত/নিস্তেজ",m:"Large-Lazy: অনেক অলস বা নিস্তেজ।"},
+        {w:"Levee",bn:"বাঁধ",m:"Level: পানির লেভেল ঠিক রাখার বাঁধ।"},
+        {w:"Levity",bn:"চপলতা/হালকা আচরণ",m:"Level-Down: সিরিয়াস জায়গায় হালকা হওয়া।"},
+        {w:"Log",bn:"কাষ্ঠখণ্ড/রেকর্ড বই",m:"Blog: প্রতিদিনের কাজের হিসাব রাখা।"},
+        {w:"Loquacious",bn:"বাচাল",m:"Low-Quiet: একদম শান্ত থাকতে পারে না যে।"},
+        {w:"Lucid",bn:"স্বচ্ছ/সহজবোধ্য",m:"Liquid: পানির মতো পরিষ্কার ও স্বচ্ছ।"},
+        {w:"Luminous",bn:"উজ্জ্বল",m:"Lumin: টিউবলাইটের মতো আলোকিত।"},
+        {w:"Magnanimity",bn:"মহত্ত্ব/উদারতা",m:"Magnify: মনের বিশালতা বা মহত্ত্ব।"},
+        {w:"Malingerer",bn:"কাজে ফাঁকি দেওয়া",m:"Mal-Injury: মিথ্যে অসুস্থতার ভান করা।"},
+        {w:"Malleable",bn:"নমনীয়/সহজবোধ্য",m:"Melting-Table: যা গলিয়ে যেকোনো রূপ দেওয়া যায়।"},
+        {w:"Maverick",bn:"স্বতন্ত্র চিন্তার লোক",m:"Major-Risk: যে একাই ভিন্ন পথে চলে।"},
+        {w:"Mendacious",bn:"মিথ্যাবাদী",m:"Amend-No: যে কখনো মিথ্যে সংশোধন করে না।"},
+        {w:"Metamorphosis",bn:"রূপান্তর",m:"Morph: সম্পূর্ণ বদলে যাওয়া।"},
+        {w:"Meticulous",bn:"খুঁতখুঁতে/অতি সতর্ক",m:"Medical: ডাক্তাররা যেমন প্রতিটি ডিটেইল দেখেন।"},
+        {w:"Misanthrope",bn:"মানুষবিদ্বেষী",m:"Miss-Anthrop: মানুষের সঙ্গ মিস করতে চায় যে।"},
+        {w:"Mitigate",bn:"প্রশমিত করা",m:"Gate-Close: ঝামেলার গেট বন্ধ করে কমানো।"},
+        {w:"Mollify",bn:"শান্ত করা",m:"Modify: রাগ পরিবর্তন করে শান্ত করা।"},
+        {w:"Morose",bn:"ম্লান/বিষণ্ণ",m:"Mourn: শোকাতুর বা বিষণ্ণ অবস্থা।"},
+        {w:"Mundane",bn:"সাধারণ/পার্থিব",m:"Monday: সোমবারের মতো বোরিং কাজের দিন।"},
+        {w:"Negate",bn:"নাকচ করা",m:"Negative: কোনো কিছুকে না বলা।"}
+    ],
+    10: [
+        {w:"Neophyte",bn:"নবীন/শিক্ষানবিশ",m:"New-Fight: যে নতুন নতুন লড়ছে বা শিখছে।"},
+        {w:"Obdurate",bn:"একগুঁয়ে/অদম্য",m:"Durability: নিজের ভুল সিদ্ধান্তে অনড় থাকা।"},
+        {w:"Obsequious",bn:"পা-চাটা/তোষামোদকারী",m:"Sequence-Order: বসের অর্ডারের পেছনে হাঁটা।"},
+        {w:"Obviate",bn:"দূর করা/উপেক্ষা করা",m:"Obvious-Exit: সমস্যা আগেই সরিয়ে ফেলা।"},
+        {w:"Occlude",bn:"বন্ধ করে দেওয়া",m:"Include-No: ভেতরে ঢুকতে না দেওয়া বা ব্লক করা।"},
+        {w:"Officious",bn:"অযাচিত পরামর্শদাতা",m:"Office-Boss: যে না চাইতেই অফিসের উপদেশ দেয়।"},
+        {w:"Onerous",bn:"কষ্টসাধ্য/গুরুভার",m:"One-Rest: একা সব করতে গিয়ে যে কষ্ট হয়।"},
+        {w:"Oscillate",bn:"দোলায়মান হওয়া",m:"Oscilloscope: ঘড়ির পেন্ডুলামের মতো নড়াচড়া।"},
+        {w:"Ostentatious",bn:"লোক দেখানো",m:"Stunt: জাঁকজমক বা স্টান্ট দেখানো।"},
+        {w:"Paragon",bn:"উৎকর্ষের আদর্শ",m:"Penta-Gon: নিখুঁত জ্যামিতিক নকশা বা মডেল।"},
+        {w:"Partisan",bn:"পক্ষপাতী/অন্ধ সমর্থক",m:"Part: শুধু একপক্ষের হয়ে কাজ করা।"},
+        {w:"Pathological",bn:"রোগতাত্ত্বিক/অস্বাভাবিক",m:"Pathology: কোনো অভ্যাসের অস্বাভাবিক বাড়াবাড়ি।"},
+        {w:"Paucity",bn:"অল্পতা/অভাব",m:"Poor-City: যেখানে জিনিসের চরম অভাব।"},
+        {w:"Pedantic",bn:"পাণ্ডিত্যভিমানী",m:"Pandit: নিজেকে খুব জ্ঞানী দেখানো।"},
+        {w:"Penchant",bn:"ঝোঁক/পছন্দ",m:"Pendant: দামি জিনিসের প্রতি তীব্র আকর্ষণ।"},
+        {w:"Penury",bn:"চরম দারিদ্র্য",m:"Penny-Zero: যার পকেটে এক পয়সাও নেই।"},
+        {w:"Perennial",bn:"চিরস্থায়ী",m:"Per-Annual: যা বছরের পর বছর চলে।"},
+        {w:"Perfidious",bn:"বিশ্বাসঘাতক",m:"Perfume: সুগন্ধের মতো বিশ্বাস উবে যাওয়া।"},
+        {w:"Perfunctory",bn:"অযত্নশীল/তাচ্ছিল্য",m:"Function-Only: দায়সারা ভাবে কাজ শেষ করা।"},
+        {w:"Permeable",bn:"প্রবেশযোগ্য",m:"Permission: যার ভেতর দিয়ে কিছু যেতে পারে।"},
+        {w:"Pervasive",bn:"সর্বব্যাপী",m:"Pervade: সব জায়গায় ছড়িয়ে থাকা।"},
+        {w:"Phlegmatic",bn:"স্থির/আবেগহীন",m:"Flat: যার মেজাজ সবসময় সমান বা ফ্ল্যাট।"},
+        {w:"Piety",bn:"ধর্মভক্তি",m:"Pity: ধর্মের জন্য দয়া ও ভক্তি রাখা।"},
+        {w:"Placate",bn:"শান্ত করা",m:"Place-Quiet: শান্ত জায়গায় বসানো।"}
+    ],
+    11: [
+        {w:"Plasticity",bn:"নমনীয়তা",m:"Plastic: প্লাস্টিকের মতো যা ভাঁজ করা যায়।"},
+        {w:"Platitude",bn:"গতানুগতিক মন্তব্য",m:"Flat-Attitude: সাধারণ বা পানসে কথা।"},
+        {w:"Plethora",bn:"আধিক্য/প্রাচুর্য",m:"Plus-Thora: প্রয়োজনের চেয়ে অনেক বেশি।"},
+        {w:"Plummet",bn:"দ্রুত নিচে পড়ে যাওয়া",m:"Plum-Eat: ফল যেমন গাছ থেকে সজোরে পড়ে।"},
+        {w:"Porous",bn:"ছিদ্রযুক্ত",m:"Poor-Surface: যার গায়ে অসংখ্য ছিদ্র।"},
+        {w:"Pragmatic",bn:"ব্যবহারিক/বাস্তববাদী",m:"Practical: কল্পনা নয়, বাস্তব নিয়ে ভাবা।"},
+        {w:"Preamble",bn:"প্রস্তাবনা/ভূমিকা",m:"Pre-Amble: মূল কথার আগের কথা।"},
+        {w:"Precarious",bn:"অনিশ্চিত/বিপজ্জনক",m:"Pre-Care: আগেভাগে সতর্ক হতে হবে এমন বিপদ।"},
+        {w:"Precipitate",bn:"ত্বরান্বিত করা",m:"Pre-Speed: কাজের গতি বাড়িয়ে দেওয়া।"},
+        {w:"Precursor",bn:"পূর্বসূরী",m:"Pre-Curse: কোনো বড় বিপদের আগের লক্ষণ।"},
+        {w:"Presumptuous",bn:"ধৃষ্টতাপূর্ণ/অহংকারী",m:"Pre-Assume: নিজেকে আগেভাগেই বড় মনে করা।"},
+        {w:"Prevaricate",bn:"সত্য গোপন করা",m:"Pre-Fabricate: সাজিয়ে মিথ্যে বলা।"},
+        {w:"Pristine",bn:"খাঁটি/আদিম",m:"Priest: পাদ্রিদের মতো পবিত্র ও নিখুঁত।"},
+        {w:"Probity",bn:"সততা/সাধুতা",m:"Probe: তদন্তে যার সততা ধরা পড়ে।"},
+        {w:"Problematic",bn:"সন্দেহজনক/জটিল",m:"Problem: যা অনেক ঝামেলার।"},
+        {w:"Prodigal",bn:"অপব্যয়ী",m:"Proud-Girl: যে দেদারসে টাকা ওড়ায়।"},
+        {w:"Profound",bn:"গভীর/অগাধ",m:"Found-Deep: মাটির অনেক গভীরে পাওয়া।"},
+        {w:"Prohibitive",bn:"নিষেধাত্মক/অতিরিক্ত দাম",m:"Prohibit: যা কিনতে মানুষ ভয় পায়।"},
+        {w:"Proliferate",bn:"দ্রুত বিস্তার লাভ করা",m:"Pro-Life: প্রাণীর মতো দ্রুত বংশবৃদ্ধি।"},
+        {w:"Propensity",bn:"প্রবণতা/ঝোঁক",m:"Preference: কোনো কাজের দিকে টান।"},
+        {w:"Propitiate",bn:"শান্ত করা/তুষ্ট করা",m:"Proper-Eat: খাবার দিয়ে কাউকে তুষ্ট করা।"},
+        {w:"Propriety",bn:"শালীনতা/যথাযথ আচরণ",m:"Proper: সমাজে যথাযথ ভাবে চলা।"},
+        {w:"Proscribe",bn:"নিষিদ্ধ করা",m:"Pro-Script: যে স্ক্রিপ্ট বা লেখা বাতিল।"},
+        {w:"Pungent",bn:"তীব্র/কটুগন্ধযুক্ত",m:"Punch: নাকে পাঞ্চ করার মতো তীব্র গন্ধ।"}
+    ],
+    12: [
+        {w:"Qualified",bn:"শর্তসাপেক্ষ/যোগ্য",m:"Quality-Limit: কিছু লিমিটেশনসহ যোগ্যতা।"},
+        {w:"Quibble",bn:"অযথা তর্ক করা",m:"Quick-Bubble: তুচ্ছ বিষয় নিয়ে ঝামেলা করা।"},
+        {w:"Quiescent",bn:"শান্ত/নিষ্ক্রিয়",m:"Quiet-Scene: একদম শান্ত দৃশ্য।"},
+        {w:"Rarefied",bn:"বিবল/উচ্চমানের",m:"Rare: যা খুব কম পাওয়া যায় ও দামি।"},
+        {w:"Recalcitrant",bn:"অবাধ্য/বিদ্রোহী",m:"Calculator-No: যে কোনো নিয়ম মানে না।"},
+        {w:"Recant",bn:"মত বদলানো",m:"Recall-Cant: আগের কথা ফিরিয়ে নেওয়া।"},
+        {w:"Recluse",bn:"নির্জনবাসী",m:"Red-Close: দরজা বন্ধ করে একা থাকা।"},
+        {w:"Recondite",bn:"দুর্বোধ্য/গভীর",m:"Re-Condition: যা বুঝতে বারবার পড়তে হয়।"},
+        {w:"Refractory",bn:"অবাধ্য/শক্ত",m:"Factory-Worker: ফ্যাক্টরির মতো শক্ত মনের মানুষ।"},
+        {w:"Refute",bn:"ভুল প্রমাণ করা",m:"Refuse-Truth: কোনো যুক্তি নাকচ করে দেওয়া।"},
+        {w:"Relegate",bn:"নিম্নপদে নামিয়ে দেওয়া",m:"Rela-Gate: গেটের বাইরে পাঠিয়ে দেওয়া।"},
+        {w:"Reproach",bn:"তিরস্কার করা",m:"Re-Approach: আবার সমালোচনা করা।"},
+        {w:"Reprobate",bn:"লম্পট/নীতিহীন লোক",m:"Re-Probity-No: যার মধ্যে সততা নেই।"},
+        {w:"Repudiate",bn:"অস্বীকার করা/বাতিল করা",m:"Refuse-Date: ডেটিং বাতিল বা নাকচ করা।"},
+        {w:"Rescind",bn:"বাতিল করা/রদ করা",m:"Recall-End: আইন শেষ বা বাতিল করা।"},
+        {w:"Resolution",bn:"দৃঢ় সংকল্প",m:"Result-Final: নিজের লক্ষ্যে স্থির থাকা।"},
+        {w:"Resolve",bn:"মীমাংসা করা/সমাধান",m:"Re-Solve: পুনরায় সমাধান করা।"},
+        {w:"Reticent",bn:"চাপা স্বভাবের",m:"Rest-Silent: শান্ত ও চুপচাপ থাকা।"},
+        {w:"Reverent",bn:"শ্রদ্ধাশীল",m:"River-End: গঙ্গার মতো পবিত্র ও ভক্তিপূর্ণ।"},
+        {w:"Sage",bn:"বিজ্ঞ/ঋষি",m:"Stage-Wise: স্টেজে কথা বলার মতো জ্ঞানী।"},
+        {w:"Salubrious",bn:"স্বাস্থ্যকর",m:"Salad-Eat: সালাদ খেয়ে স্বাস্থ্য ভালো রাখা।"},
+        {w:"Sanction",bn:"অনুমোদন/শাস্তি",m:"Section-Rule: অফিশিয়াল পারমিশন।"},
+        {w:"Satiate",bn:"পরিতৃপ্ত করা",m:"Satisfy-Eat: খেয়ে দেয়ে একদম তুষ্ট।"},
+        {w:"Saturate",bn:"সম্পৃক্ত করা",m:"Saturation: একদম পূর্ণ বা কানায় কানায় ভরা।"}
+    ],
+    13: [
+        {w:"Savor",bn:"আস্বাদন করা",m:"Flavor: খাবারের স্বাদ তারিয়ে খাওয়া।"},
+        {w:"Secrete",bn:"ক্ষরণ করা/গোপন করা",m:"Secret: গোপনে কোনো কিছু লুকানো বা বের করা।"},
+        {w:"Shard",bn:"ভাঙা টুকরো",m:"Sharp: কাঁচের তীক্ষ্ণ ধারালো টুকরো।"},
+        {w:"Skeptic",bn:"সন্দেহবাদী",m:"Skip-Tick: সবকিছুর ওপর সন্দেহ করা।"},
+        {w:"Soporific",bn:"নিদ্রাজনক",m:"Sopo-Sleep: যা খেলে ঘুম আসে।"},
+        {w:"Specious",bn:"মিথ্যা আকর্ষণীয়",m:"Suspicious: যা দেখতে ভালো কিন্তু আসলে ভুল।"},
+        {w:"Spectrum",bn:"বর্ণালি/পরিসর",m:"Spectacle: রঙের বিশাল রেঞ্জ।"},
+        {w:"Sporadic",bn:"বিক্ষিপ্ত/মাঝে মাঝে",m:"Speed-Break: থেমে থেমে হওয়া।"},
+        {w:"Stigma",bn:"কলঙ্ক",m:"Stick-Mark: গায়ের ওপর দাগ বা লজ্জা।"},
+        {w:"Stint",bn:"সীমিত করা/ফাঁকি দেওয়া",m:"Short-Intention: খরচ কমাতে কৃপণতা।"},
+        {w:"Stipulate",bn:"শর্ত দেওয়া",m:"Step-Regulation: প্রতিটি ধাপে নিয়ম মানা।"},
+        {w:"Stolid",bn:"নিস্পৃহ/স্থির",m:"Solid: পাথরের মতো আবেগহীন।"},
+        {w:"Strut",bn:"গর্বে হাঁটা",m:"Street-Proud: রাস্তায় বুক ফুলিয়ে হাঁটা।"},
+        {w:"Subpoena",bn:"আদালতের সমন",m:"Submit-Penalty: হাজিরা না দিলে শাস্তি।"},
+        {w:"Subside",bn:"কমে যাওয়া",m:"Side: সরে গিয়ে শান্ত হওয়া।"},
+        {w:"Substantiate",bn:"প্রমাণ করা",m:"Substance: বাস্তব তথ্য দিয়ে প্রমাণ করা।"},
+        {w:"Supersede",bn:"স্থলাভিষিক্ত হওয়া",m:"Super-Seed: নতুনের এসে পুরনোকে হটানো।"},
+        {w:"Supposition",bn:"অনুমান/ধারণা",m:"Suppose: মনে করা বা আন্দাজ করা।"},
+        {w:"Tacit",bn:"মৌন/উহ্য",m:"Taxi-Silent: মুখে না বললেও ড্রাইভার গন্তব্য জানে।"},
+        {w:"Tangential",bn:"অপ্রাসঙ্গিক",m:"Tangent: মূল বৃত্তের বাইরে দিয়ে যাওয়া।"},
+        {w:"Tenuous",bn:"পাতলা/অস্পষ্ট",m:"Tiny: যা অনেক ক্ষীণ বা দুর্বল।"},
+        {w:"Tirade",bn:"তীব্র গালিগালাজ",m:"Tired: কথা শুনতে শুনতে ক্লান্ত হওয়া।"},
+        {w:"Torpor",bn:"অসাড়তা/নিশ্চলতা",m:"Turtle: কচ্ছপের মতো অলস ও ধীর।"},
+        {w:"Tortuous",bn:"আঁকাবাঁকা/জটিল",m:"Torture: জটিল রাস্তায় চলার মতো কষ্ট।"},
+        {w:"Tractable",bn:"সহজেই নিয়ন্ত্রণযোগ্য",m:"Track-able: যাকে সহজে ট্র্যাকে রাখা যায়।"},
+        {w:"Transgression",bn:"আইন লঙ্ঘন",m:"Across-Reg: আইনের সীমানা অতিক্রম করা।"},
+        {w:"Truculence",bn:"মারমুখো ভাব",m:"Truck-Clash: ট্রাকের ধাক্কার মতো হিংস্র।"},
+        {w:"Vacillate",bn:"দ্বিধা করা",m:"Oscillate: মনের এদিক ওদিক দোলাচল।"},
+        {w:"Venerate",bn:"শ্রদ্ধা করা",m:"Venerable: অত্যন্ত সম্মানী ব্যক্তি।"},
+        {w:"Veracious",bn:"সত্যবাদী",m:"Verify: যার কথা সবসময় সত্য পাওয়া যায়।"},
+        {w:"Verbose",bn:"বাচাল/শব্দবহুল",m:"Verbal-Over: কথার অনেক বেশি ব্যবহার।"},
+        {w:"Viable",bn:"কার্যকর/উন্নতি সক্ষম",m:"Vibrant: যা টিকে থাকতে পারে।"},
+        {w:"Viscous",bn:"আঠালো/ঘন",m:"Visual-Stick: যা আঠার মতো লেগে থাকে।"},
+        {w:"Vituperative",bn:"তীব্র নিন্দাজনক",m:"Virtual-Attack: বাজে কথা বলে আক্রমণ।"},
+        {w:"Volatile",bn:"পরিবর্তনশীল/অস্থির",m:"Volatility: হঠাৎ মেজাজ বদলে যাওয়া।"},
+        {w:"Wary",bn:"সতর্ক/সাবধান",m:"Beware: কোনো বিপদে সতর্ক থাকা।"},
+        {w:"Welter",bn:"বিশৃঙ্খলা",m:"Water: পানির মতো এলোমেলো জগাখিচুড়ি।"},
+        {w:"Whimsical",bn:"খামখেয়ালি",m:"Whim: হঠাৎ মাথায় আসা পাগলাটে বুদ্ধি।"},
+        {w:"Zealot",bn:"গোঁড়া/অন্ধ ভক্ত",m:"Zeal: ধর্মের প্রতি অত্যন্ত গোঁড়া টান।"}
+    ],
+    14: null
+};
+
+// ===== BUILD ALL WORDS FLAT =====
+const allWords = [];
+for (let d = 1; d <= 13; d++) {
+    (vocabularyData[d] || []).forEach(item => allWords.push({...item, day: d}));
+}
+
+// ===== NAV =====
+const navGrid = document.getElementById('navGrid');
+for (let i = 1; i <= 14; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'day-btn';
+    btn.dataset.day = i;
+    btn.innerHTML = `Day ${i}<span class="date-label">${dates[i-1]}</span>`;
+    btn.onclick = () => { clearSearchSilent(); showDay(i); };
+    navGrid.appendChild(btn);
+}
+
+// ===== SEARCH =====
+const searchInput = document.getElementById('searchInput');
+const clearBtn = document.getElementById('clearSearch');
+const searchInfo = document.getElementById('searchInfo');
+
+searchInput.addEventListener('input', function() {
+    const q = this.value.trim();
+    clearBtn.style.display = q ? 'block' : 'none';
+    if (q.length >= 1) {
+        isSearchMode = true;
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        renderSearchResults(q);
+    } else {
+        isSearchMode = false;
+        searchInfo.textContent = '';
+        if (currentDay) showDay(currentDay, true);
+        else document.getElementById('displayArea').innerHTML = `<div class="empty-state"><div class="icon">👆</div><p>পড়া শুরু করতে উপরের যেকোনো একটি Day বাটনে ক্লিক করুন!</p></div>`;
+    }
+});
+
+function renderSearchResults(q) {
+    const ql = q.toLowerCase();
+    const matches = allWords.filter(item =>
+        item.w.toLowerCase().includes(ql) ||
+        item.bn.toLowerCase().includes(ql) ||
+        item.m.toLowerCase().includes(ql)
+    );
+    searchInfo.textContent = matches.length > 0 ? `${matches.length}টি শব্দ পাওয়া গেছে` : 'কোনো শব্দ পাওয়া যায়নি';
+    const displayArea = document.getElementById('displayArea');
+    if (matches.length === 0) {
+        displayArea.innerHTML = `<div class="day-header"><h2>🔍 Search Results</h2></div><div class="no-results">কোনো শব্দ পাওয়া যায়নি।</div>`;
+        return;
+    }
+    displayArea.innerHTML = `
+        <div class="day-header">
+            <h2>🔍 Search: "${q}"</h2>
+            <span class="word-count-badge">${matches.length} শব্দ</span>
+        </div>
+        <small class="double-click-hint">💡 কোনো row-এ ডাবল-ক্লিক করলে Revision List-এ যোগ হবে</small>
+        <div class="table-wrapper"><table>
+            <thead><tr><th>English Word</th><th>Bengali Meaning</th><th>Mnemonic</th></tr></thead>
+            <tbody>${matches.map(item => buildRow(item)).join('')}</tbody>
+        </table></div>`;
+    attachRowEvents();
+}
+
+function clearSearch() {
+    searchInput.value = '';
+    clearBtn.style.display = 'none';
+    searchInfo.textContent = '';
+    isSearchMode = false;
+    if (currentDay) showDay(currentDay, true);
+    else document.getElementById('displayArea').innerHTML = `<div class="empty-state"><div class="icon">👆</div><p>পড়া শুরু করতে উপরের যেকোনো একটি Day বাটনে ক্লিক করুন!</p></div>`;
+}
+function clearSearchSilent() {
+    searchInput.value = '';
+    clearBtn.style.display = 'none';
+    searchInfo.textContent = '';
+    isSearchMode = false;
+}
+
+// ===== SHOW DAY =====
+function showDay(dayNum, silent) {
+    currentDay = dayNum;
+    if (!silent) {
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`[data-day="${dayNum}"]`).classList.add('active');
+    }
+    const displayArea = document.getElementById('displayArea');
+    document.getElementById('revisionPage').style.display = 'none';
+    displayArea.style.display = 'block';
+
+    if (dayNum === 14) {
+        displayArea.innerHTML = `
+            <div class="day-header">
+                <h2>📅 Day 14 — Final Review (June 22)</h2>
+                <span class="word-count-badge">🎉 Revision Day</span>
+            </div>
+            <div class="review-card">
+                <h3>🏆 অভিনন্দন!</h3>
+                <p>আজ নতুন কোনো শব্দ নেই। Day 1 থেকে Day 13 পর্যন্ত সমস্ত ৩৩৩টি শব্দ আবার একবার ঝালিয়ে নাও। কঠিন শব্দগুলো Revision List-এ রেখেছ কিনা চেক করো।</p>
+            </div>`;
+        return;
+    }
+    const words = vocabularyData[dayNum];
+    if (!words) return;
+    displayArea.innerHTML = `
+        <div class="day-header">
+            <h2>📅 Day ${dayNum} — ${dates[dayNum-1]}</h2>
+            <span class="word-count-badge">${words.length} শব্দ</span>
+        </div>
+        <small class="double-click-hint">💡 কোনো row-এ ডাবল-ক্লিক করলে Revision List-এ যোগ/বাদ হবে</small>
+        <div class="table-wrapper"><table>
+            <thead><tr><th>English Word</th><th>Bengali Meaning</th><th>Mnemonic (মনে রাখার কৌশল)</th></tr></thead>
+            <tbody>${words.map(item => buildRow({...item, day: dayNum})).join('')}</tbody>
+        </table></div>`;
+    attachRowEvents();
+}
+
+function buildRow(item) {
+    const inRev = revisionWords.has(item.w);
+    return `<tr class="${inRev ? 'in-revision' : ''}" data-word="${item.w}">
+        <td class="word-cell">${inRev ? '<span class="pin-icon">📌</span>' : ''}${item.w}</td>
+        <td class="bn-cell">${item.bn}</td>
+        <td class="m-cell">${item.m}</td>
+    </tr>`;
+}
+
+function attachRowEvents() {
+    document.querySelectorAll('#displayArea tbody tr').forEach(row => {
+        row.addEventListener('dblclick', function() {
+            const word = this.dataset.word;
+            if (!word) return;
+            if (revisionWords.has(word)) {
+                revisionWords.delete(word);
+                showToast(`"${word}" revision list থেকে বাদ দেওয়া হয়েছে`);
+            } else {
+                revisionWords.add(word);
+                showToast(`"${word}" revision list-এ যোগ হয়েছে 📌`);
+            }
+            updateRevBadge();
+            // re-render the row
+            const inRev = revisionWords.has(word);
+            this.className = inRev ? 'in-revision' : '';
+            this.querySelector('.word-cell').innerHTML = (inRev ? '<span class="pin-icon">📌</span>' : '') + word;
+        });
+    });
+}
+
+// ===== REVISION PAGE =====
+function updateRevBadge() {
+    document.getElementById('revBadge').textContent = revisionWords.size;
+}
+
+function showRevisionPage() {
+    document.getElementById('displayArea').style.display = 'none';
+    const rp = document.getElementById('revisionPage');
+    rp.style.display = 'block';
+    renderRevisionWords();
+}
+
+function hideRevisionPage() {
+    document.getElementById('revisionPage').style.display = 'none';
+    document.getElementById('displayArea').style.display = 'block';
+}
+
+function renderRevisionWords() {
+    const box = document.getElementById('revWordBox');
+    if (revisionWords.size === 0) {
+        box.innerHTML = `<div class="rev-empty">কোনো শব্দ এখনো যোগ করা হয়নি।<br><small>কোনো শব্দে ডাবল-ক্লিক করলে এখানে যোগ হবে।</small></div>`;
+        return;
+    }
+    const tags = [...revisionWords].map(w =>
+        `<span class="rev-word-tag" title="ক্লিক করে বাদ দিন" onclick="removeFromRevision('${w}')">${w} ✕</span>`
+    ).join('');
+    box.innerHTML = tags;
+}
+
+function removeFromRevision(word) {
+    revisionWords.delete(word);
+    updateRevBadge();
+    renderRevisionWords();
+    // update rows in current view
+    document.querySelectorAll(`#displayArea tr[data-word="${word}"]`).forEach(row => {
+        row.className = '';
+        row.querySelector('.word-cell').innerHTML = word;
+    });
+    showToast(`"${word}" বাদ দেওয়া হয়েছে`);
+}
+
+function copyRevisionList() {
+    if (revisionWords.size === 0) { showToast('তালিকা খালি!'); return; }
+    const text = [...revisionWords].join(', ');
+    navigator.clipboard.writeText(text).then(() => showToast('Copied! ✅')).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta); showToast('Copied! ✅');
+    });
+}
+
+function clearRevisionList() {
+    if (revisionWords.size === 0) return;
+    revisionWords.clear();
+    updateRevBadge();
+    renderRevisionWords();
+    // refresh current day view if visible
+    if (currentDay && document.getElementById('displayArea').style.display !== 'none') showDay(currentDay, true);
+    showToast('Revision list পরিষ্কার করা হয়েছে');
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
